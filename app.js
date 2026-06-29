@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import { App } from '@slack/bolt';
+import registerCommands from './commands/index.js';
+import registerMessageListeners from './listeners/message.js';
+import registerActionListeners from './listeners/actions.js';
 
-// Initializes app with bot token and app token
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   socketMode: true,
@@ -9,12 +11,12 @@ const app = new App({
 });
 
 registerCommands(app);
+registerMessageListeners(app);
+registerActionListeners(app);
 
 async function main() {
-  // Default: start the Bolt app
- await app.start(process.env.PORT || 3000);
- app.logger.info('HelperHippo is running!');
+  await app.start(process.env.PORT || 3000);
+  app.logger.info('HelperHippo is running!');
 }
 
 main();
-#hello

@@ -1,42 +1,74 @@
 export function ticket(app) {
+  app.command('/ticket', async ({ command, ack, client }) => {
+    await ack();
 
-app.command('/ticket', async ({ command, ack, say }) => {
-  await ack();  
-
-  await say({
-    blocks: [
-      // 1️⃣ Text at the top
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `🎫 *New Ticket Request*\n*Submitted by:* <@${command.user_id}>\n*Details:* ${command.text}`
-        }
-      },
-      // 2️⃣ Divider line (optional, looks clean)
-      {
-        type: 'divider'
-      },
-      // 3️⃣ Buttons at the bottom
-      {
-        type: 'actions',
-        elements: [
+    await client.views.open({
+      trigger_id: command.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'submit_ticket',
+        private_metadata: command.channel_id,
+        title: { type: 'plain_text', text: 'Submit a Ticket' },
+        submit: { type: 'plain_text', text: 'Submit' },
+        close: { type: 'plain_text', text: 'Cancel' },
+        blocks: [
           {
-            type: 'button',
-            text: { type: 'plain_text', text: '✅ Approve' },
-            style: 'primary', // green button
-            action_id: 'approve_ticket'
+            type: 'input',
+            block_id: 'title_block',
+            label: { type: 'plain_text', text: 'Title' },
+            element: {
+              type: 'plain_text_input',
+              action_id: 'title_input',
+              placeholder: { type: 'plain_text', text: 'Brief summary of the issue' },
+              ...(command.text ? { initial_value: command.text } : {})
+            }
           },
           {
-            type: 'button',
-            text: { type: 'plain_text', text: '❌ Reject' },
-            style: 'danger', // red button
-            action_id: 'reject_ticket'
+            type: 'input',
+            block_id: 'description_block',
+            label: { type: 'plain_text', text: 'Description' },
+            optional: true,
+            element: {
+              type: 'plain_text_input',
+              action_id: 'description_input',
+              multiline: true,
+              placeholder: { type: 'plain_text', text: 'Provide more detail about the issue...' }
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'priority_block',
+            label: { type: 'plain_text', text: 'Priority' },
+            element: {
+              type: 'static_select',
+              action_id: 'priority_select',
+              placeholder: { type: 'plain_text', text: 'Select a priority' },
+              options: [
+                { text: { type: 'plain_text', text: '🔴 High' }, value: 'high' },
+                { text: { type: 'plain_text', text: '🟡 Medium' }, value: 'medium' },
+                { text: { type: 'plain_text', text: '🟢 Low' }, value: 'low' }
+              ]
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'category_block',
+            label: { type: 'plain_text', text: 'Category' },
+            element: {
+              type: 'static_select',
+              action_id: 'category_select',
+              placeholder: { type: 'plain_text', text: 'Select a category' },
+              options: [
+                { text: { type: 'plain_text', text: '🐛 Bug' }, value: 'bug' },
+                { text: { type: 'plain_text', text: '✨ Feature Request' }, value: 'feature' },
+                { text: { type: 'plain_text', text: '❓ Question' }, value: 'question' },
+                { text: { type: 'plain_text', text: '🔧 Maintenance' }, value: 'maintenance' },
+                { text: { type: 'plain_text', text: '📋 Other' }, value: 'other' }
+              ]
+            }
           }
         ]
       }
-    ],
-    text: 'New Ticket Request' // Fallback text for notifications
+    });
   });
-});
 }

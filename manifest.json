@@ -1,6 +1,8 @@
 {
   "display_information": {
-    "name": "Getting Started Bolt App"
+    "name": "HelperHippo",
+    "description": "Your friendly Slack assistant",
+    "background_color": "#4a154b"
   },
   "features": {
     "app_home": {
@@ -9,13 +11,50 @@
       "messages_tab_read_only_enabled": false
     },
     "bot_user": {
-      "display_name": "BoltApp",
+      "display_name": "HelperHippo",
       "always_online": true
-    }
+    },
+    "slash_commands": [
+      {
+        "command": "/helperhippo",
+        "description": "Introduce Helper Hippo and see what it can do",
+        "usage_hint": "",
+        "should_escape": false
+      },
+      {
+        "command": "/help",
+        "description": "List all available commands and message triggers",
+        "usage_hint": "",
+        "should_escape": false
+      },
+      {
+        "command": "/weather",
+        "description": "Get current weather (defaults to your Slack timezone)",
+        "usage_hint": "[city or location]",
+        "should_escape": false
+      },
+      {
+        "command": "/joke",
+        "description": "Get a random joke",
+        "usage_hint": "",
+        "should_escape": false
+      },
+      {
+        "command": "/ticket",
+        "description": "Submit a support ticket with priority and category",
+        "usage_hint": "[optional title to pre-fill]",
+        "should_escape": false
+      }
+    ]
   },
   "oauth_config": {
     "scopes": {
-      "bot": ["channels:history", "chat:write", "im:history"]
+      "bot": [
+        "channels:history",
+        "chat:write",
+        "im:history",
+        "commands"
+      ]
     }
   },
   "settings": {
