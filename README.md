@@ -1,70 +1,113 @@
-# Getting Started ⚡️ Bolt for JavaScript
+# HelperHippo 🦛
 
-> Slack app example from 📚 [Getting started with Bolt for JavaScript tutorial][1]
+A Slack bot built with [Bolt for JavaScript](https://tools.slack.dev/bolt-js/) that provides slash commands, interactive messages, a ticket approval workflow, and live weather updates — all running over Socket Mode (no public URL required).
 
-## Overview
+---
 
-This is a Slack app built with the [Bolt for JavaScript framework][2] that showcases
-responding to events and interactive buttons.
+## Features
 
-## Running locally
+### Slash Commands
 
-### 0. Create a new Slack App
+| Command | Description |
+|---|---|
+| `/helperhippo` | Introduces the bot and shows an interactive "Ask a Question" button |
+| `/help` | Lists all available commands and message triggers |
+| `/weather [location]` | Shows current temperature, humidity, and conditions. Defaults to your Slack timezone if no location is provided |
+| `/joke` | Returns a random joke |
+| `/ticket <description>` | Posts a ticket request with Approve / Reject buttons |
 
-- Go to https://api.slack.com/apps
-- Click **Create App**
-- Choose a workspace
-- Enter App Manifest using contents of `manifest.json`
-- Click **Create**
+### Message Listeners
 
-Once the app is created click **Install to Workspace**
-Then scroll down in Basic Info and click **Generate Token and Scopes** with both scopes
+| Trigger | Response |
+|---|---|
+| `hello` | Greets the user with a "Click Me" interactive button |
+| `goodbye` | Replies with a random farewell (Adios / Au revoir / Farewell) |
 
-### 1. Setup environment variables
+### Interactive Actions
 
-```zsh
-# Replace with your bot and app token
-export SLACK_BOT_TOKEN=<your-bot-token> # from the OAuth section
-export SLACK_APP_TOKEN=<your-app-level-token> # from the Basic Info App Token Section
+- **Click Me** button — acknowledges the button click and announces it to the channel
+- **Ask a Question** button — prompts the user to follow up with a question
+- **Approve / Reject** on tickets — updates the original ticket message in-place with the reviewer's name and a status badge
+
+### Outgoing Webhook
+
+A `sendSlackWebhook` utility (`webhooks/webHook.js`) lets you post messages to any Slack Incoming Webhook URL from within the app.
+
+---
+
+## Project Structure
+
+```
+first-bolt-app/
+├── app.js                  # Entry point — initializes the Bolt app and registers all handlers
+├── commands/
+│   ├── index.js            # Registers all slash commands
+│   ├── helperhippo.js      # /helperhippo command
+│   ├── help.js             # /help command
+│   ├── weather.js          # /weather command
+│   ├── joke.js             # /joke command
+│   └── ticket.js           # /ticket command + approve/reject actions
+├── listeners/
+│   ├── message.js          # hello / goodbye message listeners
+│   └── actions.js          # button_click, ask_question, approve_ticket, reject_ticket
+├── services/
+│   └── index.js            # Shared service utilities
+├── utils/
+│   └── fetchWeather.js     # Fetches weather from the Open-Meteo API
+└── webhooks/
+    └── webHook.js          # Outgoing Slack Incoming Webhook helper
 ```
 
-### 2. Setup your local project
+---
 
-```zsh
-# Clone this project onto your machine
-git clone https://github.com/slack-samples/bolt-js-getting-started-app.git
+## Setup
 
-# Change into the project
-cd bolt-js-getting-started-app/
+### 1. Create a Slack App
 
-# Install the dependencies
+1. Go to [https://api.slack.com/apps](https://api.slack.com/apps) and click **Create App**
+2. Choose **From an app manifest**
+3. Select your workspace and paste in the contents of `manifest.json`
+4. Click **Create**, then **Install to Workspace**
+5. Under **Basic Info → App-Level Tokens**, click **Generate Token and Scopes** — add both `connections:write` and `authorizations:read` scopes
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```
+SLACK_BOT_TOKEN=xoxb-...        # OAuth & Permissions → Bot User OAuth Token
+SLACK_APP_TOKEN=xapp-...        # Basic Info → App-Level Tokens
+SLACK_WEBHOOK_URL=https://...   # Optional — Incoming Webhook URL for outgoing messages
+PORT=3000                        # Optional — defaults to 3000
+```
+
+### 3. Install Dependencies
+
+```bash
 npm install
 ```
 
-### 3. Start servers
+### 4. Run the App
 
-```zsh
-npm run start
+```bash
+npm start
 ```
 
-### 4. Test
+The bot connects over Socket Mode — no public-facing URL or ngrok tunnel needed.
 
-Go to the installed workspace and type "hello" in a DM to your new bot. You can also type "hello" in a channel where the bot is present.
+---
 
-## Contributing
+## Dependencies
 
-### Issues and questions
+| Package | Purpose |
+|---|---|
+| `@slack/bolt` | Slack app framework |
+| `dotenv` | Loads `.env` into `process.env` |
 
-Found a bug or have a question about this project? We'd love to hear from you!
+Weather data is provided by the [Open-Meteo API](https://open-meteo.com/) — free and no API key required.
 
-1. Browse to [slackapi/bolt-js/issues][4]
-1. Create a new issue
-1. Select the `[x] examples` category
+---
 
-See you there and thanks for helping to improve Bolt for everyone!
+## License
 
-[1]: https://tools.slack.dev/bolt-js/getting-started
-[2]: https://tools.slack.dev/bolt-js/
-[3]: https://tools.slack.dev/bolt-js/getting-started/#setting-up-events
-[4]: https://github.com/slackapi/bolt-js/issues/new/choose
-# HelperHippoSanbox
+MIT
