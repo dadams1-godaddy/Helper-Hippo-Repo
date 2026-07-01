@@ -13,3 +13,5 @@ export default function registerCommands(app) {
   ticket(app);
   audit(app);
 }
+
+//plz work
