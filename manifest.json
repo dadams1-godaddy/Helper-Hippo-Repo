@@ -44,6 +44,18 @@
         "description": "Submit a support ticket with priority and category",
         "usage_hint": "[optional title to pre-fill]",
         "should_escape": false
+      },
+      {
+        "command": "/run-audit",
+        "description": "Run the initial inventory audit and select follow-up audits",
+        "usage_hint": "",
+        "should_escape": false
+      },
+      {
+        "command": "/load-audit",
+        "description": "Load existing audit data and select a follow-up audit to run",
+        "usage_hint": "",
+        "should_escape": false
       }
     ]
   },
